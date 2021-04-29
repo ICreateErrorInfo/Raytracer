@@ -45,7 +45,6 @@ namespace Raytracer
 
             Parallel.For(0, height, y =>
              {
-
                  for (int x = 0; x < width; x++)
                  {
                      double xx = (2 * ((x + 0.5) * invWidth) - 1) * angle * aspectratio;
@@ -85,7 +84,7 @@ namespace Raytracer
                 return bitmapimage;
             }
         }
-        int maxRayDepth = 10;
+        int maxRayDepth = 20;
         double mix(double a, double b, double mix)
         {
             return b * mix + a * (1 - mix);
@@ -136,18 +135,27 @@ namespace Raytracer
                 double fresneleffect = mix(Math.Pow(1 - facingratio, 3), 1, 0.1);
                 Vektor refldir = raydir - nhit * 2 * Vektor.DotProduct(raydir, nhit);
                 refldir = refldir.Normalise();
+                if (double.IsNaN(refldir.X) || double.IsNaN(refldir.Y) || double.IsNaN(refldir.Z))
+                {
+
+                }
                 Vektor reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
                 Vektor refraction = new Vektor(0, 0, 0);
 
                 if (sphere.transparency != 0)
                 {
                     double ior = 1.1;
-                    double eta = (inside) ? ior : 1 / ior;
+                    double eta = (inside) ? ior : (double)1 / (double)ior;
+                    if(eta < 0)
+                    {
+                        eta *= -1;
+                    }
                     double cosi = -Vektor.DotProduct(nhit, raydir);
                     double k = 1 - eta * eta * (1 - cosi * cosi);
-                    Vektor refrdir = raydir * new Vektor(eta, eta, eta) + nhit * new Vektor(eta * cosi - Math.Sqrt(k), eta * cosi - Math.Sqrt(k), eta * cosi - Math.Sqrt(k));
+
+                    Vektor refrdir = raydir * eta + nhit * new Vektor(eta * cosi - Math.Sqrt(k));
                     refrdir = refrdir.Normalise();
-                    refraction = trace(phit - nhit * new Vektor(bias, bias, bias), refrdir, spheres, depth + 1);
+                    refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
                 }
                 surfaceColor = (
                                 reflection * fresneleffect +
@@ -181,7 +189,6 @@ namespace Raytracer
                     }
                 }
             }
-
             return surfaceColor + sphere.emissionColor;
         }
 
