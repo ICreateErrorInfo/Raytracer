@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -26,8 +27,12 @@ namespace Raytracer
             //Light
             spheres.Add(new Sphere(new Vektor(0.0, 20, -30), 3, new Vektor(0.00, 0.00, 0.00), 0, 0.0, new Vektor(3)));
 
+            var sw = Stopwatch.StartNew();
+
             Raytrace raytrace = new Raytrace();
             image.Source = BitmapToImageSource(raytrace.render(spheres));
+
+            Stats.Content = $"render time: {sw.Elapsed:c}";
         }
         BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
