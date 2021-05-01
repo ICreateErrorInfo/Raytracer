@@ -17,16 +17,18 @@
 
     class hittable
     {
-        public virtual bool Hit(ray r, double t_min, double t_max, hit_record rec)
+        public virtual zwischenSpeicher Hit(ray r, double t_min, double t_max, hit_record rec)
         {
-            return false; 
+            zwischenSpeicher zw = new zwischenSpeicher();
+            return zw; 
         }
     }
 
     struct zwischenSpeicher
     {
-        public static hit_record rec;
-        public static ray scattered;
-        public static Vektor attenuation;
+        public bool IsTrue;
+        public hit_record rec;
+        public ray scattered;
+        public Vektor attenuation;
     }
 }

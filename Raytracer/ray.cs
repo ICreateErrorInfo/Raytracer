@@ -48,15 +48,18 @@ namespace Raytracer
                 return new Vektor(0, 0, 0);
             }
 
-            if (world.Hit(r, 0.0001, Mathe.infinity, rec))
+            zwischenSpeicher zw = world.Hit(r, 0.0001, Mathe.infinity, rec);
+            if (zw.IsTrue)
             {
-                rec = zwischenSpeicher.rec;
+                rec = zw.rec;
                 ray scattered = new ray();
                 Vektor attenuation = new Vektor();
-                if (rec.mat_ptr.scatter(r, rec, attenuation, scattered))
+                zwischenSpeicher zw1 = rec.mat_ptr.scatter(r, rec, attenuation, scattered);
+
+                if (zw1.IsTrue)
                 {
-                    attenuation = zwischenSpeicher.attenuation;
-                    scattered = zwischenSpeicher.scattered;
+                    attenuation = zw1.attenuation;
+                    scattered = zw1.scattered;
 
                     return attenuation * ray_color(scattered, world, depth - 1);
                 }

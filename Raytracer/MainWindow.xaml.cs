@@ -1,6 +1,7 @@
 ﻿using Projection;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -13,10 +14,10 @@ namespace Raytracer
         {
             InitializeComponent();
 
-            const int image_width = 400;
-            const int image_height = 236;
+            const int image_width = 1920;
+            const int image_height = 1080;
             double aspect_ratio = (double)image_width / (double)image_height;
-            const int samples_per_pixel = 10;
+            const int samples_per_pixel = 500;
             const int max_depth = 50;
 
             //World
@@ -44,8 +45,9 @@ namespace Raytracer
 
             Camera cam = new Camera(lookfrom, lookat, vup, 50, aspect_ratio, aperture, dist_to_focus);
 
+            Vektor[,] vArr = new Vektor[image_height, image_width];
             Bitmap bmp = new Bitmap(image_width, image_height);
-            for (int j = (image_height - 1); j >= 0; j--)
+            Parallel.For(0, image_height, j =>
             {
                 for (int i = 0; i < image_width; i++)
                 {
@@ -57,9 +59,19 @@ namespace Raytracer
                         ray r = cam.get_ray(u, v);
                         pixel_color += ray.ray_color(r, world, max_depth);
                     }
-                    bmp.SetPixel(i, (j - (image_height - 1)) * -1, Vektor.toColor(pixel_color, samples_per_pixel));
+                    vArr[j, i] = pixel_color;
+                }
+
+            });
+
+            for (int j = 0; j < image_height; j++)
+            {
+                for(int i = 0; i < image_width; i++)
+                {
+                    bmp.SetPixel(i, (j - (image_height - 1)) * -1, Vektor.toColor(vArr[j, i], samples_per_pixel));
                 }
             }
+
             image.Source = BitmapToImageSource(bmp);
         }
 

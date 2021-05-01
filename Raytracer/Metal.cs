@@ -10,16 +10,18 @@
         public Vektor albedo;
         public double fuzz;
 
-        public override bool scatter(ray r_in, hit_record rec, Vektor attenuation, ray scattered)
+        public override zwischenSpeicher scatter(ray r_in, hit_record rec, Vektor attenuation, ray scattered)
         {
+            zwischenSpeicher zw = new zwischenSpeicher();
             Vektor reflected = Vektor.reflect(Vektor.unit_Vektor(r_in.Direction), rec.normal);
             scattered = new ray(rec.p, reflected + fuzz * Vektor.random_in_unit_sphere());
             attenuation = albedo;
 
-            zwischenSpeicher.scattered = scattered;
-            zwischenSpeicher.attenuation = attenuation;
+            zw.scattered = scattered;
+            zw.attenuation = attenuation;
+            zw.IsTrue = (Vektor.dot(scattered.Direction, rec.normal) > 0.0);
 
-            return (Vektor.dot(scattered.Direction, rec.normal) > 0.0);
+            return zw;
         }
     }
 }

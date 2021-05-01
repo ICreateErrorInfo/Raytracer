@@ -15,25 +15,29 @@ namespace Raytracer
 
         private List<hittable> objects = new List<hittable>();
 
-        public override bool Hit(ray r, double t_min, double t_max, hit_record rec)
+        public override zwischenSpeicher Hit(ray r, double t_min, double t_max, hit_record rec)
         {
+            zwischenSpeicher zw = new zwischenSpeicher();
             hit_record temp_rec = new hit_record();
             bool hit_anything = false;
             var closest_so_far = t_max;
 
             foreach (var Object in objects)
             {
-                if (Object.Hit(r, t_min, closest_so_far, temp_rec))
+                zwischenSpeicher zw1 = Object.Hit(r, t_min, closest_so_far, temp_rec);
+                if (zw1.IsTrue)
                 {
-                    temp_rec = zwischenSpeicher.rec;
+                    temp_rec = zw1.rec;
                     hit_anything = true;
                     closest_so_far = temp_rec.t;
                     rec = temp_rec;
                 }
             }
 
-            zwischenSpeicher.rec = rec;
-            return hit_anything;
+            zw.rec = rec;
+            zw.IsTrue = hit_anything;
+
+            return zw;
         }
     }
 }

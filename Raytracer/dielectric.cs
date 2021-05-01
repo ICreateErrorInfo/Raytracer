@@ -10,8 +10,9 @@ namespace Raytracer
         }
         public double ir;
 
-        public override bool scatter(ray r_in, hit_record rec, Vektor attenuation, ray scattered)
+        public override zwischenSpeicher scatter(ray r_in, hit_record rec, Vektor attenuation, ray scattered)
         {
+            zwischenSpeicher zw = new zwischenSpeicher();
             attenuation = new Vektor(1, 1, 1);
             double refraction_ratio = rec.front_face ? (1 / ir) : ir;
 
@@ -33,10 +34,11 @@ namespace Raytracer
 
             scattered = new ray(rec.p, direction);
 
-            zwischenSpeicher.attenuation = attenuation;
-            zwischenSpeicher.scattered = scattered;
+            zw.attenuation = attenuation;
+            zw.scattered = scattered;
+            zw.IsTrue = true;
 
-            return true;
+            return zw;
         }
     }
 }

@@ -15,8 +15,9 @@ namespace Raytracer
         double radius;
         material mat_ptr;
 
-        public override bool Hit(ray r, double t_min, double t_max, hit_record rec)
+        public override zwischenSpeicher Hit(ray r, double t_min, double t_max, hit_record rec)
         {
+            zwischenSpeicher zw = new zwischenSpeicher();
             Vektor oc = r.Origin - center;
             var a = r.Direction.length_squared();
             var half_b = Vektor.dot(oc, r.Direction);
@@ -25,7 +26,8 @@ namespace Raytracer
             var discriminant = half_b * half_b - a * c;
             if (discriminant < 0)
             {
-                return false;
+                zw.IsTrue = false;
+                return zw;
             }
             var sqrtd = Math.Sqrt(discriminant);
 
@@ -35,7 +37,8 @@ namespace Raytracer
                 root = (-half_b + sqrtd) / a;
                 if (root < t_min || t_max < root)
                 {
-                    return false;
+                    zw.IsTrue = false;
+                    return zw;
                 }
             }
 
@@ -45,8 +48,10 @@ namespace Raytracer
             rec.set_face_normal(r, outward_normal);
             rec.mat_ptr = mat_ptr;
 
-            zwischenSpeicher.rec = rec;
-            return true;
+            zw.rec = rec;
+            zw.IsTrue = true;
+
+            return zw;
         }
 
     }
