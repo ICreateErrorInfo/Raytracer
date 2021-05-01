@@ -8,6 +8,6 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid x:Name="MainGrid">
         <Image x:Name="image"/>
-        <Label x:Name="Stats" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+
     </Grid>
 </Window>

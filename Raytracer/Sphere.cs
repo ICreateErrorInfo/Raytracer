@@ -1,48 +1,53 @@
 ﻿using System;
-using Projection;
 
 namespace Raytracer
 {
-    class Sphere
+    class sphere : hittable
     {
-        public Vektor center;
-        public double radius;
-        public double radius2;
-        public Vektor surfaceColor;
-        public Vektor emissionColor;
-        public double transparency;
-        public double reflection;
-        public double t1;
-        public double t0;
-
-        public Sphere(Vektor c, double r, Vektor sc, double refl = 0, double transp = 0, Vektor ec = new Vektor())
+        public sphere() { }
+        public sphere(Vektor cen, double r, material m)
         {
-            center = c;
+            center = cen;
             radius = r;
-            radius2 = r * r;
-            surfaceColor = sc;
-            emissionColor = ec;
-            transparency = transp;
-            reflection = refl;
+            mat_ptr = m;
         }
-        public bool intersect(Vektor rayorig, Vektor raydir)
-        {
-            Vektor l = center - rayorig;
-            double tca = Vektor.DotProduct(l, raydir);
-            if (tca < 0)
-            {
-                return false;
-            }
-            double d2 = Vektor.DotProduct(l, l) - tca * tca;
-            if (d2 > radius2)
-            {
-                return false;
-            }
-            double thc = Math.Sqrt(radius2 - d2);
-            t0 = tca - thc;
-            t1 = tca + thc;
+        Vektor center;
+        double radius;
+        material mat_ptr;
 
+        public override bool Hit(ray r, double t_min, double t_max, hit_record rec)
+        {
+            Vektor oc = r.Origin - center;
+            var a = r.Direction.length_squared();
+            var half_b = Vektor.dot(oc, r.Direction);
+            var c = oc.length_squared() - radius * radius;
+
+            var discriminant = half_b * half_b - a * c;
+            if (discriminant < 0)
+            {
+                return false;
+            }
+            var sqrtd = Math.Sqrt(discriminant);
+
+            var root = (-half_b - sqrtd) / a;
+            if (root < t_min || t_max < root)
+            {
+                root = (-half_b + sqrtd) / a;
+                if (root < t_min || t_max < root)
+                {
+                    return false;
+                }
+            }
+
+            rec.t = root;
+            rec.p = r.at(rec.t);
+            Vektor outward_normal = (rec.p - center) / radius;
+            rec.set_face_normal(r, outward_normal);
+            rec.mat_ptr = mat_ptr;
+
+            zwischenSpeicher.rec = rec;
             return true;
         }
+
     }
 }
