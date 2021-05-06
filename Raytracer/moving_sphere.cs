@@ -65,6 +65,18 @@ namespace Raytracer
 
             return zw;
         }
+        public override zwischenSpeicherAABB bounding_box(double _time0, double _time1, aabb output_box)
+        {
+            zwischenSpeicherAABB zw = new zwischenSpeicherAABB();
+            aabb box0 = new aabb(center(_time0) - new Vektor(radius, radius, radius),
+                                 center(_time0) + new Vektor(radius, radius, radius));
+            aabb box1 = new aabb(center(_time1) - new Vektor(radius, radius, radius),
+                                 center(_time1) + new Vektor(radius, radius, radius));
+            output_box = aabb.surrounding_box(box0, box1);
+            zw.outputBox = output_box;
+            zw.isTrue = true;
+            return zw;
+        }
         public virtual Vektor center(double time)
         {
             return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0);

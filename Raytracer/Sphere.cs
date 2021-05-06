@@ -46,6 +46,9 @@ namespace Raytracer
             rec.p = r.at(rec.t);
             Vektor outward_normal = (rec.p - center) / radius;
             rec.set_face_normal(r, outward_normal);
+            get_sphere_uv(outward_normal, rec.u, rec.v);
+            rec.u = u;
+            rec.v = v;
             rec.mat_ptr = mat_ptr;
 
             zw.rec = rec;
@@ -53,6 +56,25 @@ namespace Raytracer
 
             return zw;
         }
+        public override zwischenSpeicherAABB bounding_box(double time0, double time1, aabb output_box)
+        {
+            zwischenSpeicherAABB zw = new zwischenSpeicherAABB();
+            output_box = new aabb(center - new Vektor(radius, radius, radius),
+                                  center + new Vektor(radius, radius, radius));
+            zw.outputBox = output_box;
+            zw.isTrue = true;
+            return zw;
+        }
+        private void get_sphere_uv(Vektor p, double u, double v)
+        {
+            var theta = Math.Acos(-p.Y);
+            var phi = Math.Atan2(-p.Z, p.X + Math.PI);
 
+            u = phi / (2 * phi);
+            v = theta / Math.PI;
+        }
+
+        private double u;
+        private double v;
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace Raytracer
 {
-    class ray
+    public class ray
     {
         public ray()
         {

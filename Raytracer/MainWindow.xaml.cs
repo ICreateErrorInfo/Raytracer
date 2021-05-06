@@ -23,29 +23,50 @@ namespace Raytracer
             //World
             var world = new hittable_list();
 
-            var material = new Metal(new Vektor(.7, .7, .7), 0.7);
-            var material1 = new Metal(new Vektor(1, 0.32, 0.36), 0);
-            var material2 = new Metal(new Vektor(0.90, 0.76, 0.46), 0);
-            var material3 = new Metal(new Vektor(0.65, 0.77, 0.97), 0);
-            var material4 = new Metal(new Vektor(0.90, 0.90, 0.90), 0);
+            Vektor lookfrom = new Vektor();
+            Vektor lookat = new Vektor();
+            var vfov = 40;
+            double aperture = 0;
 
-            var center2 = new Vektor(0, 0, -20) + new Vektor(0, Mathe.random(0, .5, 1000), 0);
+            switch (2)
+            {
+                case 1:
+                    var checker = new checker_texture(new Vektor(.2, .3, .1), new Vektor(.9, .9, .9));
 
-            world.Add(new sphere(new Vektor(0.0, -10004, -20), 10000, material));
-            world.Add(new moving_sphere(new Vektor(0, 0, -20),center2, 0, 1, 4, material1));
-            world.Add(new sphere(new Vektor(5, -1, -15), 2, material2));
-            world.Add(new sphere(new Vektor(5, 0, -25), 3, material3));
-            world.Add(new sphere(new Vektor(-5.5, 0, -15), 3, material4));
+                    var material = new Metal(new Vektor(.7, .7, .7), 0.7);
+                    var material1 = new Metal(new Vektor(1, 0.32, 0.36), 0);
+                    var material2 = new Metal(new Vektor(0.90, 0.76, 0.46), 0);
+                    var material3 = new Metal(new Vektor(0.65, 0.77, 0.97), 0);
+                    var material4 = new Metal(new Vektor(0.90, 0.90, 0.90), 0);
+
+                    var center2 = new Vektor(0, 0, -20) + new Vektor(0, Mathe.random(0, .5, 1000), 0);
+
+                    world.Add(new sphere(new Vektor(0.0, -10004, -20), 10000, new lambertian(checker)));
+                    world.Add(new moving_sphere(new Vektor(0, 0, -20), center2, 0, 1, 4, material1));
+                    world.Add(new sphere(new Vektor(5, -1, -15), 2, material2));
+                    world.Add(new sphere(new Vektor(5, 0, -25), 3, material3));
+                    world.Add(new sphere(new Vektor(-5.5, 0, -15), 3, material4));
+
+                    lookfrom = new Vektor(0, 0, 0);
+                    lookat = new Vektor(0, 0, -1);
+                    vfov = 50;
+                    aperture = 0.1;
+                    break;
+
+                case 2:
+                    world = two_spheres();
+                    lookfrom = new Vektor(13, 2, 3);
+                    lookat = new Vektor(0,0,0);
+                    vfov = 20;
+                    break;
+            }
 
             //Camera
 
-            Vektor lookfrom = new Vektor(0, 0, 0);
-            Vektor lookat = new Vektor(0, 0, -1);
             Vektor vup = new Vektor(0, 1, 0);
             var dist_to_focus = 20;
-            var aperture = 0.1;
 
-            Camera cam = new Camera(lookfrom, lookat, vup, 50, aspect_ratio, aperture, dist_to_focus, 0, 1);
+            Camera cam = new Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0, 1);
 
             Vektor[,] vArr = new Vektor[image_height, image_width];
             Bitmap bmp = new Bitmap(image_width, image_height);
@@ -91,6 +112,17 @@ namespace Raytracer
 
                 return bitmapimage;
             }
+        }
+        hittable_list two_spheres()
+        {
+            hittable_list objects = new hittable_list();
+
+            var checker = new checker_texture(new Vektor(0.2, 0.3, 0.1), new Vektor(0.9, 0.9, 0.9));
+
+            objects.Add(new sphere(new Vektor(0, -10, 0), 10, new lambertian(checker)));
+            objects.Add(new sphere(new Vektor(0, 10, 0), 10, new lambertian(checker)));
+
+            return objects;
         }
     }
 }

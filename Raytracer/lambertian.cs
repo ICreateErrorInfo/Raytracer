@@ -1,12 +1,16 @@
 ﻿namespace Raytracer
 {
-    class lambertain : material
+    class lambertian : material
     {
-        public lambertain(Vektor a)
+        public lambertian(Vektor a)
+        {
+            albedo = new solid_color(a);
+        }
+        public lambertian(Texture a)
         {
             albedo = a;
         }
-        public Vektor albedo;
+        public Texture albedo;
 
         public override zwischenSpeicher scatter(ray r_in, hit_record rec, Vektor attenuation, ray scattered)
         {
@@ -20,10 +24,9 @@
             }
 
             scattered = new ray(rec.p, scatter_direction, r_in.tm);
-            attenuation = albedo;
 
             zw.scattered = scattered;
-            zw.attenuation = attenuation;
+            zw.attenuation = albedo.value(rec.u, rec.v, rec.p);
             zw.IsTrue = true;
                 
             return zw;

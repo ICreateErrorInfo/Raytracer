@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Raytracer
 {
@@ -13,7 +14,7 @@ namespace Raytracer
             objects.Add(obj);
         }
 
-        private List<hittable> objects = new List<hittable>();
+        public List<hittable> objects = new List<hittable>();
 
         public override zwischenSpeicher Hit(ray r, double t_min, double t_max, hit_record rec)
         {
@@ -37,6 +38,32 @@ namespace Raytracer
             zw.rec = rec;
             zw.IsTrue = hit_anything;
 
+            return zw;
+        }
+        public override zwischenSpeicherAABB bounding_box(double time0, double time1, aabb output_box)
+        {
+            zwischenSpeicherAABB zw = new zwischenSpeicherAABB();
+            if (!objects.Any())
+            {
+                zw.isTrue = false;
+                return zw;
+            }
+
+            aabb temp_Box = new aabb();
+            bool first_box = true;
+
+            foreach(var _object in objects)
+            {
+                zw = _object.bounding_box(time0, time1, temp_Box);
+                if (!zw.isTrue)
+                {
+                    output_box = first_box ? zw.outputBox : aabb.surrounding_box(output_box, zw.outputBox);
+                    first_box = false;
+                }
+            }
+
+            zw.outputBox = output_box;
+            zw.isTrue = true;
             return zw;
         }
     }
