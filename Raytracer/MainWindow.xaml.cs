@@ -28,7 +28,7 @@ namespace Raytracer
             var vfov = 40;
             double aperture = 0;
 
-            switch (2)
+            switch (3)
             {
                 case 1:
                     var checker = new checker_texture(new Vektor(.2, .3, .1), new Vektor(.9, .9, .9));
@@ -57,6 +57,12 @@ namespace Raytracer
                     world = two_spheres();
                     lookfrom = new Vektor(13, 2, 3);
                     lookat = new Vektor(0,0,0);
+                    vfov = 20;
+                    break;
+                case 3:
+                    world = two_perlin_spheres();
+                    lookfrom = new Vektor(13, 2, 3);
+                    lookat = new Vektor(0, 0, 0);
                     vfov = 20;
                     break;
             }
@@ -121,6 +127,17 @@ namespace Raytracer
 
             objects.Add(new sphere(new Vektor(0, -10, 0), 10, new lambertian(checker)));
             objects.Add(new sphere(new Vektor(0, 10, 0), 10, new lambertian(checker)));
+
+            return objects;
+        }
+        hittable_list two_perlin_spheres()
+        {
+            hittable_list objects = new hittable_list();
+
+            var pertext = new noise_texture();
+
+            objects.Add(new sphere(new Vektor(0, -1000, 0), 1000, new lambertian(pertext)));
+            objects.Add(new sphere(new Vektor(0, 2, 0), 2, new lambertian(pertext)));
 
             return objects;
         }

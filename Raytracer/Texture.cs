@@ -65,4 +65,17 @@ namespace Raytracer
             }
         }
     }
+    class noise_texture : Texture
+    {
+        public noise_texture()
+        {
+
+        }
+        public override Vektor value(double u, double v, Vektor p)
+        {
+            return new Vektor(1,1,1) * noise.noise(p);
+        }
+
+        public Perlin noise = new Perlin();
+    }
 }
