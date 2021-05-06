@@ -14,10 +14,10 @@ namespace Raytracer
         {
             InitializeComponent();
 
-            const int image_width = 1920;
-            const int image_height = 1080;
+            const int image_width = 400;
+            const int image_height = 236;
             double aspect_ratio = (double)image_width / (double)image_height;
-            const int samples_per_pixel = 500;
+            const int samples_per_pixel = 10;
             const int max_depth = 50;
 
             //World
