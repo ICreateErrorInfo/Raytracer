@@ -5,7 +5,7 @@ namespace Raytracer
 {
     class Camera
     {
-        public Camera(Vektor lookfrom, Vektor lookat, Vektor vup, double vfov, double aspect_ratio, double aperture, double focus_dist)
+        public Camera(Vektor lookfrom, Vektor lookat, Vektor vup, double vfov, double aspect_ratio, double aperture, double focus_dist, double _time0 = 0, double _time1 = 0)
         {
             var theta = Mathe.ToRad(vfov);
             var h = Math.Tan(theta / 2);
@@ -22,6 +22,8 @@ namespace Raytracer
             lower_left_corner = origin - horizontal / 2 - vertical / 2 - focus_dist * w;
 
             lens_radius = aperture / 2;
+            time0 = _time0;
+            time1 = _time1;
         }
 
         public ray get_ray(double s, double t)
@@ -29,7 +31,9 @@ namespace Raytracer
             Vektor rd = lens_radius * Vektor.random_in_unit_disk();
             Vektor offset = u * rd.X + v * rd.Y;
 
-            return new ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
+            return new ray(origin + offset,
+                           lower_left_corner + s * horizontal + t * vertical - origin - offset,
+                           Mathe.random(time0, time1, 10000));
         }
 
         Vektor origin;
@@ -40,5 +44,7 @@ namespace Raytracer
         Vektor v;
         Vektor w;
         double lens_radius;
+        double time0;
+        double time1;
     }
 }

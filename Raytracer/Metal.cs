@@ -14,7 +14,7 @@
         {
             zwischenSpeicher zw = new zwischenSpeicher();
             Vektor reflected = Vektor.reflect(Vektor.unit_Vektor(r_in.Direction), rec.normal);
-            scattered = new ray(rec.p, reflected + fuzz * Vektor.random_in_unit_sphere());
+            scattered = new ray(rec.p, reflected + fuzz * Vektor.random_in_unit_sphere(), r_in.tm);
             attenuation = albedo;
 
             zw.scattered = scattered;

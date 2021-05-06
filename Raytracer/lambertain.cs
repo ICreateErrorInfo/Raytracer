@@ -19,7 +19,7 @@
                 scatter_direction = rec.normal;
             }
 
-            scattered = new ray(rec.p, scatter_direction);
+            scattered = new ray(rec.p, scatter_direction, r_in.tm);
             attenuation = albedo;
 
             zw.scattered = scattered;

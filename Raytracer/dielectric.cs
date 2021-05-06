@@ -32,7 +32,7 @@ namespace Raytracer
                 direction = Vektor.refract(unit_direction, rec.normal, refraction_ratio);
             }
 
-            scattered = new ray(rec.p, direction);
+            scattered = new ray(rec.p, direction, r_in.tm);
 
             zw.attenuation = attenuation;
             zw.scattered = scattered;

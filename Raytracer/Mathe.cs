@@ -25,10 +25,10 @@ namespace Projection {
             if (x > max) return max;
             return x;
         }
-        public static double random(int min, int max, int durch)
+        public static double random(double min, double max, double durch)
         {
             Random random = new System.Random();
-            int rand_num = random.Next(min * durch, max * durch);
+            double rand_num = random.Next(Convert.ToInt32(min * durch), Convert.ToInt32(max * durch));
             rand_num -= durch;
             return Convert.ToDouble((double)rand_num / (double)durch);
         }

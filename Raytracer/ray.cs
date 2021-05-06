@@ -9,14 +9,16 @@ namespace Raytracer
         {
 
         }
-        public ray(Vektor origin, Vektor direction)
+        public ray(Vektor origin, Vektor direction, double time = 0)
         {
             Origin = origin;
             Direction = direction;
+            tm = time;
         }
 
         public Vektor Origin;
         public Vektor Direction;
+        public double tm;
 
         public Vektor at(double t)
         {

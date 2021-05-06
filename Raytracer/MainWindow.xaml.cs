@@ -14,10 +14,10 @@ namespace Raytracer
         {
             InitializeComponent();
 
-            const int image_width = 1920;
-            const int image_height = 1080;
+            const int image_width = 400;
+            const int image_height = 236;
             double aspect_ratio = (double)image_width / (double)image_height;
-            const int samples_per_pixel = 500;
+            const int samples_per_pixel = 200;
             const int max_depth = 50;
 
             //World
@@ -29,8 +29,10 @@ namespace Raytracer
             var material3 = new Metal(new Vektor(0.65, 0.77, 0.97), 0);
             var material4 = new Metal(new Vektor(0.90, 0.90, 0.90), 0);
 
+            var center2 = new Vektor(0, 0, -20) + new Vektor(0, Mathe.random(0, .5, 1000), 0);
+
             world.Add(new sphere(new Vektor(0.0, -10004, -20), 10000, material));
-            world.Add(new sphere(new Vektor(0, 0, -20), 4, material1));
+            world.Add(new moving_sphere(new Vektor(0, 0, -20),center2, 0, 1, 4, material1));
             world.Add(new sphere(new Vektor(5, -1, -15), 2, material2));
             world.Add(new sphere(new Vektor(5, 0, -25), 3, material3));
             world.Add(new sphere(new Vektor(-5.5, 0, -15), 3, material4));
@@ -40,10 +42,10 @@ namespace Raytracer
             Vektor lookfrom = new Vektor(0, 0, 0);
             Vektor lookat = new Vektor(0, 0, -1);
             Vektor vup = new Vektor(0, 1, 0);
-            var dist_to_focus = 10;
+            var dist_to_focus = 20;
             var aperture = 0.1;
 
-            Camera cam = new Camera(lookfrom, lookat, vup, 50, aspect_ratio, aperture, dist_to_focus);
+            Camera cam = new Camera(lookfrom, lookat, vup, 50, aspect_ratio, aperture, dist_to_focus, 0, 1);
 
             Vektor[,] vArr = new Vektor[image_height, image_width];
             Bitmap bmp = new Bitmap(image_width, image_height);
