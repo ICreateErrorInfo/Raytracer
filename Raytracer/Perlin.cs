@@ -34,11 +34,48 @@ namespace Raytracer
 
         public double noise(Vektor p)
         {
-            var i = Convert.ToInt32(4 * p.X) & 255;
-            var j = Convert.ToInt32(4 * p.Y) & 255;
-            var k = Convert.ToInt32(4 * p.Z) & 255;
+            var u = p.X - Math.Floor(p.X);
+            var v = p.Y - Math.Floor(p.Y);
+            var w = p.Z - Math.Floor(p.Z);
 
-            return ranfloat[perm_x[i] ^ perm_y[j] ^ perm_z[k]];
+            var i = Convert.ToInt32(Math.Floor(p.X));
+            var j = Convert.ToInt32(Math.Floor(p.Y));
+            var k = Convert.ToInt32(Math.Floor(p.Z));
+            double[,,] c = new double[2,2,2];
+
+            for(int di = 0; di < 2; di++)
+            {
+                for(int dj = 0; dj < 2; dj++)
+                {
+                    for (int dk = 0; dk < 2; dk++)
+                    {
+                        c[di, dj, dk] = ranfloat[
+                            perm_x[(i+di) & 255] ^
+                            perm_y[(j+dj) & 255] ^
+                            perm_z[(k+dk) & 255]
+                            ];
+                    }
+                }
+            }
+
+            return trilinear_interp(c, u, v, w);
+        }
+        private static double trilinear_interp(double[,,] c, double u, double v, double w)
+        {
+            double accum = 0;
+            for(int i = 0; i < 2; i++)
+            {
+                for(int j = 0; j < 2; j++)
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        accum += (i * u + (1 - i) * (1 - u)) *
+                                 (j * v + (1 - j) * (1 - v)) *
+                                 (k * w + (1 - k) * (1 - w)) * c[i,j,k];
+                    }
+                }
+            }
+            return accum;
         }
         private static int[] perlin_generate_perm()
         {
