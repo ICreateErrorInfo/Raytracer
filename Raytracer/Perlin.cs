@@ -9,10 +9,10 @@ namespace Raytracer
     {
         public Perlin()
         {
-            ranfloat = new double[point_count];
+            ranfloat = new Vektor[point_count];
             for(int i = 0; i < point_count; i++)
             {
-                ranfloat[i] = Mathe.random_double();
+                ranfloat[i] = Vektor.unit_Vektor(Vektor.random());
             }
 
             perm_x = perlin_generate_perm();
@@ -21,13 +21,13 @@ namespace Raytracer
         }
         ~Perlin()
         {
-            ranfloat = new double[0];
+            ranfloat = new Vektor[0];
             perm_x = new int[0];
             perm_y = new int[0];
             perm_z = new int[0];
         }
         private static int point_count = 256;
-        private double[] ranfloat;
+        private Vektor[] ranfloat;
         int[] perm_x;
         int[] perm_y;
         int[] perm_z;
@@ -37,14 +37,11 @@ namespace Raytracer
             var u = p.X - Math.Floor(p.X);
             var v = p.Y - Math.Floor(p.Y);
             var w = p.Z - Math.Floor(p.Z);
-            u = u * u * (3 - 2 * u);
-            v = v * v * (3 - 2 * v);
-            w = w * w * (3 - 2 * w);
 
             var i = Convert.ToInt32(Math.Floor(p.X));
             var j = Convert.ToInt32(Math.Floor(p.Y));
             var k = Convert.ToInt32(Math.Floor(p.Z));
-            double[,,] c = new double[2,2,2];
+            Vektor[,,] c = new Vektor[2,2,2];
 
             for(int di = 0; di < 2; di++)
             {
@@ -61,20 +58,26 @@ namespace Raytracer
                 }
             }
 
-            return trilinear_interp(c, u, v, w);
+            return perlin_interp(c, u, v, w);
         }
-        private static double trilinear_interp(double[,,] c, double u, double v, double w)
+        private static double perlin_interp(Vektor[,,] c, double u, double v, double w)
         {
+            var uu = u * u * (3 - 2 * u);
+            var vv = v * v * (3 - 2 * v);
+            var ww = w * w * (3 - 2 * w);
             double accum = 0;
+
             for(int i = 0; i < 2; i++)
             {
                 for(int j = 0; j < 2; j++)
                 {
                     for (int k = 0; k < 2; k++)
                     {
-                        accum += (i * u + (1 - i) * (1 - u)) *
-                                 (j * v + (1 - j) * (1 - v)) *
-                                 (k * w + (1 - k) * (1 - w)) * c[i,j,k];
+                        Vektor weight_v = new Vektor(u-i, v-j, w-k);
+                        accum += (i * uu + (1 - i) * (1 - uu)) *
+                                 (j * vv + (1 - j) * (1 - vv)) *
+                                 (k * ww + (1 - k) * (1 - ww)) * 
+                                 Vektor.dot(c[i,j,k], weight_v);
                     }
                 }
             }

@@ -134,7 +134,7 @@ namespace Raytracer
         {
             hittable_list objects = new hittable_list();
 
-            var pertext = new noise_texture();
+            var pertext = new noise_texture(4);
 
             objects.Add(new sphere(new Vektor(0, -1000, 0), 1000, new lambertian(pertext)));
             objects.Add(new sphere(new Vektor(0, 2, 0), 2, new lambertian(pertext)));

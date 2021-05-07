@@ -71,11 +71,16 @@ namespace Raytracer
         {
 
         }
+        public noise_texture(double sc)
+        {
+            scale = sc;
+        }
         public override Vektor value(double u, double v, Vektor p)
         {
-            return new Vektor(1,1,1) * noise.noise(p);
+            return new Vektor(1,1,1) * 0.5 * (1 + noise.noise(scale * p));
         }
 
         public Perlin noise = new Perlin();
+        double scale;
     }
 }
