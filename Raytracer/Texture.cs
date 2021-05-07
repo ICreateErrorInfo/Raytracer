@@ -77,7 +77,7 @@ namespace Raytracer
         }
         public override Vektor value(double u, double v, Vektor p)
         {
-            return new Vektor(1,1,1) * noise.turb(scale * p);
+            return new Vektor(1,1,1) * 0.5 * (1 + Math.Sin(scale * p.Z + 10*noise.turb(scale * p)));
         }
 
         public Perlin noise = new Perlin();
