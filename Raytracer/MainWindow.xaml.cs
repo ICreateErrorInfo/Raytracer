@@ -28,7 +28,7 @@ namespace Raytracer
             var vfov = 40;
             double aperture = 0;
 
-            switch (3)
+            switch (4)
             {
                 case 1:
                     var checker = new checker_texture(new Vektor(.2, .3, .1), new Vektor(.9, .9, .9));
@@ -65,6 +65,12 @@ namespace Raytracer
                     lookat = new Vektor(0, 0, 0);
                     vfov = 20;
                     break;
+                case 4:
+                    world = earth();
+                    lookfrom = new Vektor(13, 2, 3);
+                    lookat = new Vektor(0, 0, 0);
+                    vfov = 20;
+                    break;
             }
 
             //Camera
@@ -90,14 +96,14 @@ namespace Raytracer
                     }
                     vArr[j, i] = pixel_color;
                 }
-
+            
             });
 
             for (int j = 0; j < image_height; j++)
             {
                 for(int i = 0; i < image_width; i++)
                 {
-                    bmp.SetPixel(i, (j - (image_height - 1)) * -1, Vektor.toColor(vArr[j, i], samples_per_pixel));
+                    bmp.SetPixel(i, (j - (image_height - 1)) * -1, Vektor.toColor(vArr[j, i], samples_per_pixel));   
                 }
             }
 
@@ -140,6 +146,17 @@ namespace Raytracer
             objects.Add(new sphere(new Vektor(0, 2, 0), 2, new lambertian(pertext)));
 
             return objects;
+        }
+        hittable_list earth()
+        {
+            var earth_texture = new image_texture("C:/Users/Moritz/source/repos/Raytracer/Resources/earthmap.jpg");
+
+            var earth_surface = new lambertian(earth_texture);
+            var globe = new sphere(new Vektor(0, 0, 0), 2, earth_surface);
+            var ret = new hittable_list();
+            ret.Add(globe);
+
+            return ret;
         }
     }
 }

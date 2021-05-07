@@ -9,6 +9,10 @@ namespace Raytracer
         {
 
         }
+        public hittable_list(hittable obj)
+        {
+            objects.Add(obj);
+        }
         public void Add(hittable obj)
         {
             objects.Add(obj);

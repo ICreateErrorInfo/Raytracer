@@ -46,9 +46,7 @@ namespace Raytracer
             rec.p = r.at(rec.t);
             Vektor outward_normal = (rec.p - center) / radius;
             rec.set_face_normal(r, outward_normal);
-            get_sphere_uv(outward_normal, rec.u, rec.v);
-            rec.u = u;
-            rec.v = v;
+            (rec.u, rec.v) = get_sphere_uv(outward_normal, rec.u, rec.v);
             rec.mat_ptr = mat_ptr;
 
             zw.rec = rec;
@@ -65,13 +63,15 @@ namespace Raytracer
             zw.isTrue = true;
             return zw;
         }
-        private void get_sphere_uv(Vektor p, double u, double v)
+        private (double u, double v) get_sphere_uv(Vektor p, double u, double v)
         {
             var theta = Math.Acos(-p.Y);
-            var phi = Math.Atan2(-p.Z, p.X + Math.PI);
+            var phi = Math.Atan2(-p.Z, p.X) + Math.PI;
 
-            u = phi / (2 * phi);
+            u = phi / (2 * Math.PI);
             v = theta / Math.PI;
+
+            return (u, v);
         }
 
         private double u;
