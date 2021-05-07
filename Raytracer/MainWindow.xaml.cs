@@ -27,8 +27,9 @@ namespace Raytracer
             Vektor lookat = new Vektor();
             var vfov = 40;
             double aperture = 0;
+            Vektor background = new Vektor(0, 0, 0);
 
-            switch (4)
+            switch (5)
             {
                 case 1:
                     var checker = new checker_texture(new Vektor(.2, .3, .1), new Vektor(.9, .9, .9));
@@ -51,6 +52,7 @@ namespace Raytracer
                     lookat = new Vektor(0, 0, -1);
                     vfov = 50;
                     aperture = 0.1;
+                    background = new Vektor(.7,.8,1);
                     break;
 
                 case 2:
@@ -61,15 +63,20 @@ namespace Raytracer
                     break;
                 case 3:
                     world = two_perlin_spheres();
+                    background = new Vektor(.7,.8,1);
                     lookfrom = new Vektor(13, 2, 3);
                     lookat = new Vektor(0, 0, 0);
                     vfov = 20;
                     break;
                 case 4:
                     world = earth();
+                    background = new Vektor(.7, .8, 1);
                     lookfrom = new Vektor(13, 2, 3);
                     lookat = new Vektor(0, 0, 0);
                     vfov = 20;
+                    break;
+                case 5:
+                    background = new Vektor(0,0,0);
                     break;
             }
 
@@ -92,7 +99,7 @@ namespace Raytracer
                         var u = ((double)i + Mathe.random_double()) / (image_width - 1);
                         var v = ((double)j + Mathe.random_double()) / (image_height - 1);
                         ray r = cam.get_ray(u, v);
-                        pixel_color += ray.ray_color(r, world, max_depth);
+                        pixel_color += ray.ray_color(r, background, world, max_depth);
                     }
                     vArr[j, i] = pixel_color;
                 }

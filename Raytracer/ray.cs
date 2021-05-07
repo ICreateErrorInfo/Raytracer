@@ -41,7 +41,7 @@ namespace Raytracer
                 return (-half_b - Math.Sqrt(discriminant)) / a;
             }
         }
-        public static Vektor ray_color(ray r, hittable world, int depth)
+        public static Vektor ray_color(ray r, Vektor background, hittable world, int depth)
         {
             hit_record rec = new hit_record();
 
@@ -51,28 +51,21 @@ namespace Raytracer
             }
 
             zwischenSpeicher zw = world.Hit(r, 0.0001, Mathe.infinity, rec);
-            if (zw.IsTrue)
+            if (!zw.IsTrue)
             {
-                rec = zw.rec;
-                ray scattered = new ray();
-                Vektor attenuation = new Vektor();
-                zwischenSpeicher zw1 = rec.mat_ptr.scatter(r, rec, attenuation, scattered);
+                return background;
+            }
+            ray scattered = new ray();
+            Vektor attenuation = new Vektor();
+            Vektor emitted = zw.rec.mat_ptr.emitted(zw.rec.u, zw.rec.v, zw.rec.p);
 
-                if (zw1.IsTrue)
-                {
-                    attenuation = zw1.attenuation;
-                    scattered = zw1.scattered;
-
-                    return attenuation * ray_color(scattered, world, depth - 1);
-                }
-                return new Vektor(0, 0, 0);
+            zw = zw.rec.mat_ptr.scatter(r, zw.rec, attenuation, scattered);
+            if (!zw.IsTrue)
+            {
+                return emitted;
             }
 
-            Vektor unit_direction = Vektor.unit_Vektor(r.Direction);
-            var t = 0.5 * (unit_direction.Y + 1);
-            Vektor col = (1 - t) * new Vektor(1, 1, 1) + t * new Vektor(0.5, 0.7, 1);
-
-            return col;
+            return emitted + zw.attenuation * ray_color(zw.scattered, background, world, depth - 1);
         }
     }
 }
