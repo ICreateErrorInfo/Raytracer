@@ -17,7 +17,7 @@ namespace Raytracer
             const int image_width = 400;
             const int image_height = 236;
             double aspect_ratio = (double)image_width / (double)image_height;
-            const int samples_per_pixel = 200;
+            int samples_per_pixel = 200;
             const int max_depth = 50;
 
             //World
@@ -76,7 +76,12 @@ namespace Raytracer
                     vfov = 20;
                     break;
                 case 5:
+                    world = simple_light();
+                    samples_per_pixel = 400;
                     background = new Vektor(0,0,0);
+                    lookfrom = new Vektor(26,3,6);
+                    lookat = new Vektor(0,2,0);
+                    vfov = 20;
                     break;
             }
 
@@ -164,6 +169,19 @@ namespace Raytracer
             ret.Add(globe);
 
             return ret;
+        }
+        hittable_list simple_light()
+        {
+            hittable_list objekts = new hittable_list();
+
+            var pertext = new noise_texture(4);
+            objekts.Add(new sphere(new Vektor(0, -1000, 0), 1000, new lambertian(pertext)));
+            objekts.Add(new sphere(new Vektor(0,2,0), 2, new lambertian(pertext)));
+
+            var difflight = new diffuse_light(new Vektor(4,4,4));
+            objekts.Add(new xy_rect(3,5,1,3,-2, difflight));
+
+            return objekts;
         }
     }
 }
