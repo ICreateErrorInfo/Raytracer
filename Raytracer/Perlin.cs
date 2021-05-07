@@ -37,6 +37,9 @@ namespace Raytracer
             var u = p.X - Math.Floor(p.X);
             var v = p.Y - Math.Floor(p.Y);
             var w = p.Z - Math.Floor(p.Z);
+            u = u * u * (3 - 2 * u);
+            v = v * v * (3 - 2 * v);
+            w = w * w * (3 - 2 * w);
 
             var i = Convert.ToInt32(Math.Floor(p.X));
             var j = Convert.ToInt32(Math.Floor(p.Y));
