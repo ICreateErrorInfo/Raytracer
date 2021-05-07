@@ -7,7 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid x:Name="MainGrid">
-        <Image x:Name="image"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="26"/>
+        </Grid.RowDefinitions>
+        <Image Grid.RowSpan="2" x:Name="image"/>
+        <ProgressBar Grid.Row="1" x:Name="ProgressBar"/>
 
     </Grid>
 </Window>
