@@ -14,11 +14,11 @@ namespace Raytracer
         {
             InitializeComponent();
 
-            const int image_width = 400;
-            const int image_height = 236;
+            int image_width = 400;
+            int image_height = 236;
             double aspect_ratio = (double)image_width / (double)image_height;
             int samples_per_pixel = 200;
-            const int max_depth = 50;
+            int max_depth = 50;
 
             //World
             var world = new hittable_list();
@@ -29,7 +29,7 @@ namespace Raytracer
             double aperture = 0;
             Vektor background = new Vektor(0, 0, 0);
 
-            switch (5)
+            switch (6)
             {
                 case 1:
                     var checker = new checker_texture(new Vektor(.2, .3, .1), new Vektor(.9, .9, .9));
@@ -82,6 +82,17 @@ namespace Raytracer
                     lookfrom = new Vektor(26,3,6);
                     lookat = new Vektor(0,2,0);
                     vfov = 20;
+                    break;
+                case 6:
+                    world = cornell_box();
+                    aspect_ratio = 1.0;
+                    image_width = 600;
+                    image_height = 600;
+                    samples_per_pixel = 100;
+                    background = new Vektor(0, 0, 0);
+                    lookfrom = new Vektor(278, 278, -800);
+                    lookat = new Vektor(278, 278, 0);
+                    vfov = 40;
                     break;
             }
 
@@ -182,6 +193,24 @@ namespace Raytracer
             objekts.Add(new xy_rect(3,5,1,3,-2, difflight));
 
             return objekts;
+        }
+        hittable_list cornell_box()
+        {
+            hittable_list objects = new hittable_list();
+
+            var red = new lambertian(new Vektor(.65, .05, .05));
+            var white = new lambertian(new Vektor(.73, .73, .73));
+            var green = new lambertian(new Vektor(.12, .45, .15));
+            var light = new diffuse_light(new Vektor(15, 15, 15));
+
+            objects.Add(new yz_rect (0, 555, 0, 555, 555, green));
+            objects.Add(new yz_rect (0, 555, 0, 555, 0, red));
+            objects.Add(new xz_rect (213, 343, 227, 332, 554, light));
+            objects.Add(new xz_rect (0, 555, 0, 555, 0, white));
+            objects.Add(new xz_rect (0, 555, 0, 555, 555, white));
+            objects.Add(new xy_rect (0, 555, 0, 555, 555, white));
+
+            return objects;
         }
     }
 }
