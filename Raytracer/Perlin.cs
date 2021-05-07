@@ -60,6 +60,21 @@ namespace Raytracer
 
             return perlin_interp(c, u, v, w);
         }
+        public double turb(Vektor p, int depth = 7)
+        {
+            double accum = 0;
+            var temp_p = p;
+            double weight = 1;
+
+            for(int i = 0; i < depth; i++)
+            {
+                accum += weight * noise(temp_p);
+                weight *= 0.5;
+                temp_p *= 2;
+            }
+
+            return Math.Abs(accum);
+        }
         private static double perlin_interp(Vektor[,,] c, double u, double v, double w)
         {
             var uu = u * u * (3 - 2 * u);
